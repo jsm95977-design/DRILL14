@@ -3,6 +3,9 @@ import game_world
 import game_framework
 from boy import Boy
 from grass import Grass
+from bird import Bird
+
+BIRD_COUNT = 10
 
 boy = None
 
@@ -29,6 +32,10 @@ def init():
 
     grass = Grass()
     game_world.add_oject(grass, 0)
+
+    # 새 떼 10마리 생성
+    for _ in range(BIRD_COUNT):
+        game_world.add_oject(Bird())
 
 
 def pause():
