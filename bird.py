@@ -64,5 +64,9 @@ class Bird:
         left = col * FRAME_W
         bottom = SHEET_H - (row + 1) * FRAME_H     # pico2d 는 좌하단이 원점
 
-        Bird.image.clip_draw(left, bottom, FRAME_W, FRAME_H,
-                             self.x, self.y, BIRD_DRAW_W, BIRD_DRAW_H)
+        if self.dir == 1:  # 원본 이미지는 오른쪽을 바라봄
+            Bird.image.clip_draw(left, bottom, FRAME_W, FRAME_H,
+                                 self.x, self.y, BIRD_DRAW_W, BIRD_DRAW_H)
+        else:              # 왼쪽으로 날 때는 좌우 반전
+            Bird.image.clip_composite_draw(left, bottom, FRAME_W, FRAME_H,
+                                           0, 'h', self.x, self.y, BIRD_DRAW_W, BIRD_DRAW_H)
