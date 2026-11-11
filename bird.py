@@ -12,8 +12,12 @@ BIRD_DRAW_W = int(BIRD_SIZE_M * PIXEL_PER_METER)  # 약 83 px
 BIRD_DRAW_H = int(BIRD_DRAW_W * 168 / 183)        # 원본 비율 유지
 
 # ----------------------------------------------------------------------
-# 스프라이트 시트 정보 (bird_animation.png : 5열 x 3행, 총 14 프레임)
+# 날갯짓 애니메이션 (bird_animation.png : 5열 x 3행, 총 14 프레임)
 # ----------------------------------------------------------------------
+TIME_PER_ACTION = 0.6                    # 한 번 날갯짓하는 데 걸리는 시간 (초)
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION  # 초당 날갯짓 횟수
+FRAMES_PER_ACTION = 14                   # 한 번 날갯짓에 사용되는 프레임 수
+
 SHEET_COLS, SHEET_ROWS = 5, 3
 FRAME_W, FRAME_H = 183, 168
 SHEET_H = 506
@@ -30,10 +34,17 @@ class Bird:
         self.frame = 0
 
     def update(self):
-        pass
+        dt = game_framework.frame_time
+
+        # 날갯짓 프레임 진행
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * dt) % FRAMES_PER_ACTION
 
     def draw(self):
-        # 첫 번째 프레임(좌상단)만 그림
-        bottom = SHEET_H - FRAME_H  # pico2d 는 좌하단이 원점
-        Bird.image.clip_draw(0, bottom, FRAME_W, FRAME_H,
+        index = int(self.frame)
+        col = index % SHEET_COLS
+        row = index // SHEET_COLS                 # 위에서부터 몇 번째 행인지
+        left = col * FRAME_W
+        bottom = SHEET_H - (row + 1) * FRAME_H     # pico2d 는 좌하단이 원점
+
+        Bird.image.clip_draw(left, bottom, FRAME_W, FRAME_H,
                              self.x, self.y, BIRD_DRAW_W, BIRD_DRAW_H)
