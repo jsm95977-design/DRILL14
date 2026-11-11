@@ -1,3 +1,5 @@
+import random
+
 from pico2d import load_image, get_canvas_width
 
 import game_framework
@@ -31,14 +33,18 @@ SHEET_H = 506
 class Bird:
     image = None  # 모든 새가 하나의 이미지를 공유
 
-    def __init__(self, x=800, y=450):
+    def __init__(self, x=None, y=None):
         if Bird.image is None:
             Bird.image = load_image('bird_animation.png')
 
-        self.x, self.y = x, y
-        self.dir = 1                # -1: 왼쪽, 1: 오른쪽
-        self.speed = FLY_SPEED_PPS
-        self.frame = 0
+        canvas_w = get_canvas_width()
+        half_w = BIRD_DRAW_W // 2
+
+        self.x = x if x is not None else random.randint(half_w, canvas_w - half_w)
+        self.y = y if y is not None else random.randint(300, 550)
+        self.dir = random.choice([-1, 1])            # -1: 왼쪽, 1: 오른쪽
+        self.speed = FLY_SPEED_PPS * random.uniform(0.7, 1.3)  # 개체별 속도 차이
+        self.frame = random.uniform(0, FRAMES_PER_ACTION)      # 날갯짓 박자 엇갈리게
 
     def update(self):
         dt = game_framework.frame_time
